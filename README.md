@@ -59,7 +59,7 @@
 #### 1. 分割（Segmentation）
 定义：分割任务在医学影像中是指自动或半自动地识别并标注出特定的区域，如器官、病灶、血管等。<br>
 
-##### 常用技术：
+##### 常用技术及链接：
 
 	•	卷积神经网络（CNN）：利用卷积层和池化层来提取图像特征，适用于各种医学图像分割任务。
 	•	U-Net：一种经典的卷积神经网络架构，专门为生物医学图像分割设计，采用对称的编码器-解码器结构。
@@ -69,24 +69,108 @@
 	•	DeepLab：利用空洞卷积和条件随机场（CRF）进行精细的图像分割。
 	•	DenseNet：通过密集连接卷积层来增强特征提取能力，提高分割精度。
 	•	Attention U-Net：在U-Net基础上引入注意力机制，增强对目标区域的关注。
+##### 常用数据集
 
-##### 具体临床任务：
+	1. LUNA16 (LUng Nodule Analysis 2016)
+		描述：LUNA16数据集用于肺结节检测和分割任务，包含低剂量CT扫描的肺结节图像。
+		链接：LUNA16 Dataset
+		数据格式：DICOM或NIfTI格式的CT图像
+		样本：888例CT扫描，每个扫描包含多个切片，每个切片尺寸为512x512像素
+  
+	2. BraTS (Brain Tumor Segmentation)
+		描述：BraTS数据集用于脑肿瘤分割任务，包含多模态MRI扫描（包括T1, T2, FLAIR, T1c）以及肿瘤标注。
+		链接：BraTS Dataset
+		数据格式：NIfTI格式的MRI图像
+		样本：约500例患者的MRI扫描，每个扫描包含多个模态，每个模态的尺寸为240x240x155像素
+  
+	3. ISIC (International Skin Imaging Collaboration)
+		描述：ISIC数据集用于皮肤病变分割任务，包含皮肤病变的皮肤图像和标注。
+		链接：ISIC Archive
+		数据格式：JPEG格式的皮肤图像及相应的标注文件（JSON或PNG格式）
+		样本：约25000张皮肤图像，尺寸各异，通常为1024x1024像素或更大
+  
+	4. KiTS (Kidney Tumor Segmentation)
+		描述：KiTS数据集用于肾脏和肾肿瘤的分割任务，包含CT扫描图像和手动标注的肾脏、肾肿瘤掩码。
+		链接：KiTS Dataset
+		数据格式：NIfTI格式的CT图像
+		样本：300例CT扫描，每个扫描包含多个切片，尺寸为512x512像素
+  
+	5. LiTS (Liver Tumor Segmentation)
+		描述：LiTS数据集用于肝脏和肝肿瘤的分割任务，包含CT扫描图像和肝脏、肝肿瘤的标注。
+		链接：LiTS Dataset
+		数据格式：NIfTI格式的CT图像
+		样本：131例CT扫描，每个扫描包含多个切片，尺寸为512x512像素
+  
+	6. ACDC (Automated Cardiac Diagnosis Challenge)
+		描述：ACDC数据集用于心脏分割任务，包含不同心脏阶段（收缩期、舒张期）的MRI扫描及心脏结构的标注。
+		链接：ACDC Dataset
+		数据格式：NIfTI格式的MRI图像
+		样本：100例患者的MRI扫描，每个扫描包含多个时间点和心脏切片
+  
+	7. DRIVE (Digital Retinal Images for Vessel Extraction)
+		描述：DRIVE数据集用于视网膜血管分割任务，包含眼底图像和血管标注。
+		链接：DRIVE Dataset
+		数据格式：TIFF格式的眼底图像及对应的标注文件
+		样本：40张眼底图像，每张图像的尺寸为584x565像素
+  
+	8. MSD (Medical Segmentation Decathlon)
+		描述：MSD数据集用于多种器官和病变的分割任务，包括10个不同的医学影像分割挑战。
+		链接：MSD Dataset
+		数据格式：NIfTI格式的图像
+		样本：
+			任务1: Brain Tumor - MRI图像，484例
+			任务2: Heart - MRI图像，20例
+			任务3: Hippocampus - MRI图像，394例
+			任务4: Liver - CT图像，201例
+			任务5: Lung - CT图像，63例
+			任务6: Pancreas - CT图像，281例
+			任务7: Prostate - MRI图像，48例
+			任务8: Hepatic Vessel - CT图像，443例
+			任务9: Spleen - CT图像，61例
+			任务10: Colon - CT图像，190例
+   
+	9. PROMISE12 (Prostate MR Image Segmentation 2012)
+		描述：PROMISE12数据集用于前列腺分割任务，包含多中心、多参数的前列腺MRI图像。
+		链接：PROMISE12 Dataset
+		数据格式：NIfTI格式的MRI图像
+		样本：50例患者的MRI扫描，每个扫描包含多个切片
+  
+	10. CHASE_DB1 (Child Heart and Health Study in England Database 1)
+		描述：CHASE_DB1数据集用于视网膜血管分割任务，包含儿童眼底图像和血管标注。
+		链接：CHASE_DB1 Dataset
+		数据格式：JPEG格式的眼底图像及对应的标注文件
+		样本：28张眼底图像，每张图像的尺寸为999x960像素
+  
+	11. STARE (Structured Analysis of the Retina)
+		描述：STARE数据集用于视网膜血管分割任务，包含眼底图像和血管标注。
+		链接：STARE Dataset
+		数据格式：PPM格式的眼底图像及对应的标注文件
+		样本：20张眼底图像，每张图像的尺寸为605x700像素
+  
+	12. BSDS500 (Berkeley Segmentation Dataset and Benchmark)
+		描述：BSDS500数据集用于自然图像分割任务，包含图像和人类标注的边缘检测结果。
+		链接：BSDS500 Dataset
+		数据格式：JPEG格式的图像及对应的标注文件
+		样本：500张自然图像，每张图像的尺寸约为321x481像素
 
-	肿瘤分割：
-		脑肿瘤分割：从MRI或CT图像中分割出脑肿瘤区域。
-		肺结节分割：从胸部CT图像中分割出肺结节区域。
-		肝肿瘤分割：从腹部CT图像中分割出肝脏和肝肿瘤区域。
-	器官分割：
-		脑结构分割：从MRI图像中分割出大脑不同的结构，如灰质、白质、脑脊液等。
-		心脏分割：从MRI或CT图像中分割出心脏的不同结构，如左心室、右心室、左心房、右心房等。
-		肺叶分割：从CT图像中分割出肺的不同叶片。
-	血管分割：
-		冠状动脉分割：从CT血管造影图像中分割出冠状动脉。
-		脑血管分割：从MR血管造影图像中分割出脑血管网络。
-		肝血管分割：从CT图像中分割出肝脏血管。
-	病变分割：
-		白质高信号病变分割：从MRI图像中分割出白质高信号病变区域，常见于多发性硬化症研究。
-		糖尿病性视网膜病变分割：从视网膜图像中分割出病变区域，如微动脉瘤、出血点等。
+
+#####  基本流程
+###### 数据准备
+	数据收集与来源（如公开数据集、临床数据）
+	数据预处理（如去噪、标准化、增强）
+	数据标注工具和方法
+###### 模型选择
+	常用分割网络（如U-Net、V-Net、DeepLab）
+	模型架构详解
+	预训练模型与微调
+###### 训练与验证
+	数据分割（训练集、验证集、测试集）
+	训练超参数设置（学习率、批量大小、训练轮数等）
+	验证策略与指标（交叉验证、Dice系数、IoU等）
+###### 模型评估与优化
+	评估指标与方法（混淆矩阵、ROC曲线等）
+	超参数调优（网格搜索、随机搜索）
+	模型优化技巧（正则化、数据增强、迁移学习）
 
 #### 2. 分类（Classification）
 定义：分类任务在医学影像中是指将输入数据（如影像、信号、基因数据）分配到预定义的类别中，如疾病诊断。
