@@ -56,102 +56,196 @@
 ：处理和分析医学文本数据，如电子病历（EMR）。
 
 
-#### 1. 分割（Segmentation）
-定义：分割任务在医学影像中是指自动或半自动地识别并标注出特定的区域，如器官、病灶、血管等。<br>
+# 1. 分割（Segmentation）
+定义：分割任务在医学影像中是指自动或半自动地识别并标注出特定的区域，如器官、病灶、血管等。
 
-##### 常用技术及链接：
+## 常用的分割模型
 
-	•	卷积神经网络（CNN）：利用卷积层和池化层来提取图像特征，适用于各种医学图像分割任务。
-	•	U-Net：一种经典的卷积神经网络架构，专门为生物医学图像分割设计，采用对称的编码器-解码器结构。
-	•	Fully Convolutional Networks (FCN)：将全连接层替换为卷积层，实现端到端的图像分割。
-	•	SegNet：一种基于编码器-解码器结构的卷积神经网络，用于像素级分割。
-	•	Mask R-CNN：在目标检测（如R-CNN、Faster R-CNN）的基础上增加了分割分支，实现实例分割。
-	•	DeepLab：利用空洞卷积和条件随机场（CRF）进行精细的图像分割。
-	•	DenseNet：通过密集连接卷积层来增强特征提取能力，提高分割精度。
-	•	Attention U-Net：在U-Net基础上引入注意力机制，增强对目标区域的关注。
-##### 常用数据集
+## 1. U-Net
+**链接**
+- [U-Net Paper](https://arxiv.org/abs/1505.04597)
+- [U-Net Implementation in PyTorch](https://github.com/milesial/Pytorch-UNet)
 
-	1. LUNA16 (LUng Nodule Analysis 2016)
-		描述：LUNA16数据集用于肺结节检测和分割任务，包含低剂量CT扫描的肺结节图像。
-		链接：LUNA16 Dataset
-		数据格式：DICOM或NIfTI格式的CT图像
-		样本：888例CT扫描，每个扫描包含多个切片，每个切片尺寸为512x512像素
-  
-	2. BraTS (Brain Tumor Segmentation)
-		描述：BraTS数据集用于脑肿瘤分割任务，包含多模态MRI扫描（包括T1, T2, FLAIR, T1c）以及肿瘤标注。
-		链接：BraTS Dataset
-		数据格式：NIfTI格式的MRI图像
-		样本：约500例患者的MRI扫描，每个扫描包含多个模态，每个模态的尺寸为240x240x155像素
-  
-	3. ISIC (International Skin Imaging Collaboration)
-		描述：ISIC数据集用于皮肤病变分割任务，包含皮肤病变的皮肤图像和标注。
-		链接：ISIC Archive
-		数据格式：JPEG格式的皮肤图像及相应的标注文件（JSON或PNG格式）
-		样本：约25000张皮肤图像，尺寸各异，通常为1024x1024像素或更大
-  
-	4. KiTS (Kidney Tumor Segmentation)
-		描述：KiTS数据集用于肾脏和肾肿瘤的分割任务，包含CT扫描图像和手动标注的肾脏、肾肿瘤掩码。
-		链接：KiTS Dataset
-		数据格式：NIfTI格式的CT图像
-		样本：300例CT扫描，每个扫描包含多个切片，尺寸为512x512像素
-  
-	5. LiTS (Liver Tumor Segmentation)
-		描述：LiTS数据集用于肝脏和肝肿瘤的分割任务，包含CT扫描图像和肝脏、肝肿瘤的标注。
-		链接：LiTS Dataset
-		数据格式：NIfTI格式的CT图像
-		样本：131例CT扫描，每个扫描包含多个切片，尺寸为512x512像素
-  
-	6. ACDC (Automated Cardiac Diagnosis Challenge)
-		描述：ACDC数据集用于心脏分割任务，包含不同心脏阶段（收缩期、舒张期）的MRI扫描及心脏结构的标注。
-		链接：ACDC Dataset
-		数据格式：NIfTI格式的MRI图像
-		样本：100例患者的MRI扫描，每个扫描包含多个时间点和心脏切片
-  
-	7. DRIVE (Digital Retinal Images for Vessel Extraction)
-		描述：DRIVE数据集用于视网膜血管分割任务，包含眼底图像和血管标注。
-		链接：DRIVE Dataset
-		数据格式：TIFF格式的眼底图像及对应的标注文件
-		样本：40张眼底图像，每张图像的尺寸为584x565像素
-  
-	8. MSD (Medical Segmentation Decathlon)
-		描述：MSD数据集用于多种器官和病变的分割任务，包括10个不同的医学影像分割挑战。
-		链接：MSD Dataset
-		数据格式：NIfTI格式的图像
-		样本：
-			任务1: Brain Tumor - MRI图像，484例
-			任务2: Heart - MRI图像，20例
-			任务3: Hippocampus - MRI图像，394例
-			任务4: Liver - CT图像，201例
-			任务5: Lung - CT图像，63例
-			任务6: Pancreas - CT图像，281例
-			任务7: Prostate - MRI图像，48例
-			任务8: Hepatic Vessel - CT图像，443例
-			任务9: Spleen - CT图像，61例
-			任务10: Colon - CT图像，190例
-   
-	9. PROMISE12 (Prostate MR Image Segmentation 2012)
-		描述：PROMISE12数据集用于前列腺分割任务，包含多中心、多参数的前列腺MRI图像。
-		链接：PROMISE12 Dataset
-		数据格式：NIfTI格式的MRI图像
-		样本：50例患者的MRI扫描，每个扫描包含多个切片
-  
-	10. CHASE_DB1 (Child Heart and Health Study in England Database 1)
-		描述：CHASE_DB1数据集用于视网膜血管分割任务，包含儿童眼底图像和血管标注。
-		链接：CHASE_DB1 Dataset
-		数据格式：JPEG格式的眼底图像及对应的标注文件
-		样本：28张眼底图像，每张图像的尺寸为999x960像素
-  
-	11. STARE (Structured Analysis of the Retina)
-		描述：STARE数据集用于视网膜血管分割任务，包含眼底图像和血管标注。
-		链接：STARE Dataset
-		数据格式：PPM格式的眼底图像及对应的标注文件
-		样本：20张眼底图像，每张图像的尺寸为605x700像素
-  
-	12. BSDS500 (Berkeley Segmentation Dataset and Benchmark)
-		描述：BSDS500数据集用于自然图像分割任务，包含图像和人类标注的边缘检测结果。
-		链接：BSDS500 Dataset
-		数据格式：JPEG格式的图像及对应的标注文件
-		样本：500张自然图像，每张图像的尺寸约为321x481像素
+## 2. V-Net
+
+**描述**
+- V-Net是针对三维医学图像（如CT和MRI）的分割模型。其架构类似于U-Net，但专门设计用于3D卷积网络。
+
+**链接**
+- [V-Net Paper](https://arxiv.org/abs/1606.04797)
+- [V-Net Implementation](https://github.com/faustomilletari/VNet)
+
+## 3. DeepLabV3+
+
+**描述**
+- DeepLabV3+是DeepLab系列的改进版本，结合了空洞卷积和编码器-解码器架构，能够有效捕捉多尺度上下文信息，并提高分割精度。
+
+**链接**
+- [DeepLabV3+ Paper](https://arxiv.org/abs/1802.02611)
+- [DeepLabV3+ Implementation in PyTorch](https://github.com/jfzhang95/pytorch-deeplab-xception)
+
+## 4. Attention U-Net
+
+**描述**
+- Attention U-Net在U-Net的基础上引入了注意力机制，使网络能够更好地关注重要区域，提升分割性能。
+
+**链接**
+- [Attention U-Net Paper](https://arxiv.org/abs/1804.03999)
+- [Attention U-Net Implementation](https://github.com/ozan-oktay/Attention-Gated-Networks)
+
+## 5. nnU-Net
+
+**描述**
+- nnU-Net（no-new-Net）是一种自动化的分割模型框架，能够根据数据集的特点自动配置网络结构和训练参数，MSD。
+
+**链接**
+- [nnU-Net Paper](https://arxiv.org/abs/1809.10486)
+- [nnU-Net Implementation](https://github.com/MIC-DKFZ/nnUNet)
+
+## 6. 3D U-Net
+
+**描述**
+- 3D U-Net是U-Net的三维扩展版本，专门用于3D医学图像的分割任务。其架构类似于U-Net，但采用3D卷积。
+
+**链接**
+- [3D U-Net Paper](https://arxiv.org/abs/1606.06650)
+- [3D U-Net Implementation](https://github.com/wolny/pytorch-3dunet)
+
+## 7. TransUNet
+
+**描述**
+- TransUNet结合了Transformer和U-Net的优势，通过Transformer模块捕捉长距离依赖关系，并通过U-Net实现精确的分割。
+
+**链接**
+- [TransUNet Paper](https://arxiv.org/abs/2102.04306)
+- [TransUNet Implementation](https://github.com/Beckschen/TransUNet)
+
+## 8. Swin-Unet
+
+**描述**
+- Swin-Unet是基于Swin Transformer的分割模型，利用Swin Transformer的多尺度特性和自注意力机制，提升了分割效果。
+
+**链接**
+- [Swin-Unet Paper](https://arxiv.org/abs/2105.05537)
+- [Swin-Unet Implementation](https://github.com/HuCaoFighting/Swin-Unet)
+
+## 9. SegFormer
+
+**描述**
+- SegFormer是一种高效的全Transformer架构分割模型，具备较强的跨尺度特性，适用于多种分割任务。
+
+**链接**
+- [SegFormer Paper](https://arxiv.org/abs/2105.15203)
+- [SegFormer Implementation](https://github.com/NVlabs/SegFormer)
+
+## 10. MedT
+
+**描述**
+- MedT（Medical Transformer）是一种专门为医学图像设计的Transformer架构，利用多尺度特征提取和自注意力机制，提升了分割性能。
+
+**链接**
+- [MedT Paper](https://arxiv.org/abs/2108.03305)
+- [MedT Implementation](https://github.com/jeya-maria-jose/Medical-Transformer)
+
+
+
+# 常用分割数据集
+
+## 1. LUNA16 (LUng Nodule Analysis 2016)
+
+- 描述：LUNA16数据集用于肺结节检测和分割任务，包含低剂量CT扫描的肺结节图像。
+- 链接：[LUNA16 Dataset](https://luna16.grand-challenge.org/)
+- 数据格式：DICOM或NIfTI格式的CT图像
+- 样本：888例CT扫描，每个扫描包含多个切片，每个切片尺寸为512x512像素
+
+## 2. BraTS (Brain Tumor Segmentation)
+
+- 描述：BraTS数据集用于脑肿瘤分割任务，包含多模态MRI扫描（包括T1, T2, FLAIR, T1c）以及肿瘤标注。
+- 链接：[BraTS Dataset](https://www.med.upenn.edu/cbica/brats2020/data.html)
+- 数据格式：NIfTI格式的MRI图像
+- 样本：约500例患者的MRI扫描，每个扫描包含多个模态，每个模态的尺寸为240x240x155像素
+
+## 3. ISIC (International Skin Imaging Collaboration)
+
+- 描述：ISIC数据集用于皮肤病变分割任务，包含皮肤病变的皮肤图像和标注。
+- 链接：[ISIC Archive](https://www.isic-archive.com/)
+- 数据格式：JPEG格式的皮肤图像及相应的标注文件（JSON或PNG格式）
+- 样本：约25000张皮肤图像，尺寸各异，通常为1024x1024像素或更大
+
+## 4. KiTS (Kidney Tumor Segmentation)
+
+- 描述：KiTS数据集用于肾脏和肾肿瘤的分割任务，包含CT扫描图像和手动标注的肾脏、肾肿瘤掩码。
+- 链接：[KiTS Dataset](https://kits19.grand-challenge.org/)
+- 数据格式：NIfTI格式的CT图像
+- 样本：300例CT扫描，每个扫描包含多个切片，尺寸为512x512像素
+
+## 5. LiTS (Liver Tumor Segmentation)
+
+- 描述：LiTS数据集用于肝脏和肝肿瘤的分割任务，包含CT扫描图像和肝脏、肝肿瘤的标注。
+- 链接：[LiTS Dataset](https://competitions.codalab.org/competitions/17094)
+- 数据格式：NIfTI格式的CT图像
+- 样本：131例CT扫描，每个扫描包含多个切片，尺寸为512x512像素
+
+## 6. ACDC (Automated Cardiac Diagnosis Challenge)
+
+- 描述：ACDC数据集用于心脏分割任务，包含不同心脏阶段（收缩期、舒张期）的MRI扫描及心脏结构的标注。
+- 链接：[ACDC Dataset](https://www.creatis.insa-lyon.fr/Challenge/acdc/databases.html)
+- 数据格式：NIfTI格式的MRI图像
+- 样本：100例患者的MRI扫描，每个扫描包含多个时间点和心脏切片
+
+## 7. DRIVE (Digital Retinal Images for Vessel Extraction)
+
+- 描述：DRIVE数据集用于视网膜血管分割任务，包含眼底图像和血管标注。
+- 链接：[DRIVE Dataset](https://drive.grand-challenge.org/)
+- 数据格式：TIFF格式的眼底图像及对应的标注文件
+- 样本：40张眼底图像，每张图像的尺寸为584x565像素
+
+
+## 8. MSD (Medical Segmentation Decathlon)
+
+- 描述：MSD数据集用于多种器官和病变的分割任务，包括10个不同的医学影像分割挑战。
+- 链接：[MSD Dataset](http://medicaldecathlon.com/)
+- 数据格式：NIfTI格式的图像
+- 样本：每个任务的数据量和样本数各不相同，具体如下：
+  1. **任务1: Brain Tumor** - MRI图像，484例
+  2. **任务2: Heart** - MRI图像，20例
+  3. **任务3: Hippocampus** - MRI图像，394例
+  4. **任务4: Liver** - CT图像，201例
+  5. **任务5: Lung** - CT图像，63例
+  6. **任务6: Pancreas** - CT图像，281例
+  7. **任务7: Prostate** - MRI图像，48例
+  8. **任务8: Hepatic Vessel** - CT图像，443例
+  9. **任务9: Spleen** - CT图像，61例
+  10. **任务10: Colon** - CT图像，190例
+
+## 9. PROMISE12 (Prostate MR Image Segmentation 2012)
+
+- 描述：PROMISE12数据集用于前列腺分割任务，包含多中心、多参数的前列腺MRI图像。
+- 链接：[PROMISE12 Dataset](https://promise12.grand-challenge.org/)
+- 数据格式：NIfTI格式的MRI图像
+- 样本：50例患者的MRI扫描，每个扫描包含多个切片
+
+## 10. CHASE_DB1 (Child Heart and Health Study in England Database 1)
+
+- 描述：CHASE_DB1数据集用于视网膜血管分割任务，包含儿童眼底图像和血管标注。
+- 链接：[CHASE_DB1 Dataset](https://blogs.kingston.ac.uk/retinal/chasedb1/)
+- 数据格式：JPEG格式的眼底图像及对应的标注文件
+- 样本：28张眼底图像，每张图像的尺寸为999x960像素
+
+## 11. STARE (Structured Analysis of the Retina)
+
+- 描述：STARE数据集用于视网膜血管分割任务，包含眼底图像和血管标注。
+- 链接：[STARE Dataset](http://cecas.clemson.edu/~ahoover/stare/)
+- 数据格式：PPM格式的眼底图像及对应的标注文件
+- 样本：20张眼底图像，每张图像的尺寸为605x700像素
+
+## 12. BSDS500 (Berkeley Segmentation Dataset and Benchmark)
+
+- 描述：BSDS500数据集用于自然图像分割任务，包含图像和人类标注的边缘检测结果。
+- 链接：[BSDS500 Dataset](https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/bsds/)
+- 数据格式：JPEG格式的图像及对应的标注文件
+- 样本：500张自然图像，每张图像的尺寸约为321x481像素
+
 
 
 #####  基本流程
