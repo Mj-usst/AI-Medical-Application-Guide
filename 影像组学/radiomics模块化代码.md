@@ -64,7 +64,6 @@ class DataManagement:
         nib.save(nifti_img, output_path)
         return output_path
 
-# 示例用法
 if __name__ == "__main__":
     from data_acquisition import DataAcquisition
     filename = get_testdata_files("CT_small.dcm")[0]
@@ -119,7 +118,6 @@ class FeatureExtraction:
         contrast = greycoprops(glcm, 'contrast')
         return contrast
 
-# 示例用法
 if __name__ == "__main__":
     from image_processing import ImageProcessing
     image_path = 'filtered_image.nii'
@@ -151,7 +149,6 @@ class Modeling:
         accuracy = accuracy_score(y_test, y_pred)
         return model, accuracy
 
-# 示例用法
 if __name__ == "__main__":
     # 假设features和labels已定义
     features = np.random.rand(100, 10)
@@ -199,7 +196,7 @@ feature_extraction = FeatureExtraction(filtered_image)
 features = feature_extraction.extract_glcm_features()
 
 # 模型构建与评估
-# 假设labels已经存在，这里仅作示例
+# 假设labels已经存在
 labels = np.random.randint(2, size=len(features))
 modeling = Modeling(np.array(features).reshape(-1, 1), labels)
 model, accuracy = modeling.build_and_evaluate_model()
