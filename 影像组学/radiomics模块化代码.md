@@ -3,6 +3,17 @@
 我们希望创建一个模块化且适应不同情况的影像组学流程代码，将整个流程分为几个关键模块：
 研究设计、数据采集、数据管理、图像处理和分割、特征提取、模型构建与评估。
 
+    影像组学/
+    ├── main.py
+    ├── research_design.py
+    ├── data_acquisition.py
+    ├── data_management.py
+    ├── image_processing.py
+    ├── feature_extraction.py
+    ├── modeling.py
+    └── requirements.txt
+
+
 ### 1. 研究设计模块
 ```python
 class ResearchDesign:
