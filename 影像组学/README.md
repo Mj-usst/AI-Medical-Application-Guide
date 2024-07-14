@@ -13,6 +13,19 @@
     ├── modeling.py
     └── requirements.txt
 
+### 运行项目
+创建项目文件夹 radiomics_pipeline 并将所有代码文件保存到相应的文件中。
+在项目根目录下创建并激活虚拟环境：
+
+    python -m venv venv
+    source venv/bin/activate  # 对于Windows: venv\Scripts\activate
+### 安装所需的依赖项：
+    pip install -r requirements.txt
+
+### 运行 main.py 文件：
+    python main.py
+
+## 下面是所有代码总览
 
 ### 1. 研究设计模块
 ```python
