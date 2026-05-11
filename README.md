@@ -1,423 +1,158 @@
-# AI-Application-Guide
-让大家可以更有针对性地选择和应用人工智能技术来解决临床科研中的各种问题，提高临床科研的效率
+# AI Medical Application Guide
+
+> 一个面向医学影像与临床科研场景的 AI 应用指南：从临床问题出发，完成任务定义、数据与标注设计、模型选择、验证评价、论文汇报与临床转化。
+
+本仓库不再定位为“模型和数据集清单”，而是定位为一个 **临床问题 → AI 任务 → 可执行科研方案** 的结构化框架。它适合用于：
+
+- 临床老师快速判断一个 AI 想法是否值得做；
+- 医学影像 AI 学生/实习生启动课题；
+- 多中心科研项目设计；
+- 论文 Methods、Results 和补充材料的规范化准备；
+- 医学 AI 项目的开题、答辩、基金申请和转化评估。
+
+---
+
+## 1. 核心理念
 
-### 示例应用流程
-#### 1.	疾病诊断（图像分类）
-	问题类型：图像分类
-	选择模型：CNN（如ResNet）
-	数据收集：收集大量标注好的X射线、CT或MRI影像数据
-	数据预处理：进行图像归一化和数据增强
-	模型训练：使用ResNet进行训练，调整超参数
-	模型评估：使用准确率、ROC-AUC等指标评估模型性能
-	模型部署：将训练好的模型部署到临床诊断系统中，进行实时诊断
-#### 2.	疾病预测（时间序列预测）
-	问题类型：时间序列预测
-	选择模型：LSTM
-	数据收集：收集患者的病情变化数据，如病历记录、体征数据等
-	数据预处理：进行数据清洗和平滑处理
-	模型训练：使用LSTM进行训练，调整超参数
-	模型评估：使用MSE、MAE等指标评估模型性能
-	模型部署：将模型集成到医院信息系统中，进行实时病情预测
+医学 AI 项目最常见的问题不是“不知道用什么模型”，而是：
 
-#### 临床问题类型分类
-1. 分割（Segmentation）：在医学影像中识别并标注出特定区域，如器官或病灶。[alt](分割（Segmentation） "分割（Segmentation）")
+1. 临床痛点没有被清楚定义；
+2. AI 任务与临床决策场景不匹配；
+3. 数据、标签、验证集和外部测试集设计不严谨；
+4. 只报告模型指标，不证明临床价值；
+5. 缺少可复用的项目文档、数据卡和模型卡。
 
-2. 分类（Classification）
-：将输入数据分配到预定义的类别，如疾病诊断。
+因此，本指南采用下面的闭环框架：
 
-3. 检测（Detection）
-：在医学影像中找到特定对象的位置并进行标注，如检测肺结节。
+```mermaid
+flowchart LR
+    A[Clinical Pain Point<br/>临床痛点] --> B[Clinical Question<br/>临床问题]
+    B --> C[AI Task Definition<br/>任务建模]
+    C --> D[Data & Annotation<br/>数据与标注]
+    D --> E[Baseline & Model<br/>基线与模型]
+    E --> F[Validation<br/>内部/外部验证]
+    F --> G[Clinical Evaluation<br/>读者实验/决策曲线/效率]
+    G --> H[Reporting & Translation<br/>论文汇报与转化]
+    H --> A
+```
 
-4. 回归（Regression）
-：预测一个连续值，如肿瘤生长速度、器官体积。
+一句话原则：**先问临床问题，再选 AI 任务；先设计验证，再训练模型。**
 
-5. 生成（Generation）
-：生成新的数据，如合成医学影像、图像增强。
+---
 
-6. 预测（Prediction）
-：预测未来的事件或趋势，如疾病进展、治疗效果。
+## 2. 仓库导航
 
-7. 配准（Registration）
-：将不同时间点或不同模态的医学影像对齐。
+```text
+AI-Medical-Application-Guide/
+├── README.md
+├── docs/
+│   ├── 00-start-here.md
+│   ├── 01-problem-framing.md
+│   ├── 02-data-and-annotation.md
+│   ├── 03-task-taxonomy.md
+│   └── 04-evaluation-and-statistics.md
+├── templates/
+│   ├── project-card.md
+│   ├── dataset-card.md
+│   └── model-card.md
+├── examples/
+│   ├── segmentation-lesion.md
+│   ├── classification-diagnosis.md
+│   └── dynamic-mri-workflow.md
+└── resources/
+    └── reporting-and-checklists.md
+```
 
-8. 图像复原（Image Restoration）
-：去噪、去模糊、修复医学影像中的伪影或缺陷。
+推荐阅读顺序：
 
-9. 图像增强（Image Enhancement）
-：提高医学影像的视觉质量或对比度，以便于后续分析。
+1. [`docs/00-start-here.md`](docs/00-start-here.md)：如何使用本指南；
+2. [`docs/01-problem-framing.md`](docs/01-problem-framing.md)：如何把临床痛点变成 AI 任务；
+3. [`docs/03-task-taxonomy.md`](docs/03-task-taxonomy.md)：医学 AI 常见任务类型；
+4. [`templates/project-card.md`](templates/project-card.md)：开题或带学生时直接填写；
+5. [`docs/04-evaluation-and-statistics.md`](docs/04-evaluation-and-statistics.md)：如何设计验证与统计分析。
 
-10. 多模态学习（Multimodal Learning）
-：结合多种数据模态（如影像、基因数据、临床数据）进行综合分析。
+---
 
-11. 量化分析（Quantitative Analysis）
-：从医学影像中提取定量特征（如纹理特征、形状特征）进行分析。
+## 3. 临床问题到 AI 任务的映射
 
-12. 自然语言处理（NLP）
-：处理和分析医学文本数据，如电子病历（EMR）。
+| 临床问题 | AI 任务 | 典型输出 | 常用模型/方法 | 关键评价 |
+|---|---|---|---|---|
+| 病灶/器官在哪里？ | 分割 Segmentation | mask、体积、形态参数 | U-Net、nnU-Net、SwinUNETR、SAM-style adaptation | Dice、IoU、HD95、体积误差 |
+| 这个病例属于哪类？ | 分类 Classification | 类别、风险概率 | ResNet、DenseNet、EfficientNet、ViT、ConvNeXt | AUC、敏感度、特异度、校准 |
+| 是否存在某个病灶？位置在哪里？ | 检测 Detection | bbox、中心点、候选结节 | Faster R-CNN、RetinaNet、YOLO、nnDetection | FROC、召回率、FP/scan |
+| 某个连续临床指标是多少？ | 回归 Regression | 体积、评分、风险值、时间 | CNN/Transformer 回归、XGBoost、LightGBM | MAE、RMSE、R²、校准 |
+| 缺失模态/低质量图像能否补全？ | 生成 Generation | 合成图像、增强图像 | GAN、Diffusion、VAE、CycleGAN | PSNR、SSIM、LPIPS、读者评分 |
+| 不同时间/模态图像如何对齐？ | 配准 Registration | 变形场、配准图像 | VoxelMorph、SyN、deformable registration | TRE、Dice-after-registration、Jacobian |
+| 影像和临床变量如何联合？ | 多模态 Multimodal | 综合风险、结构化报告 | late fusion、cross-attention、tabular+image model | AUC、NRI、DCA、亚组性能 |
+| 报告文本如何结构化？ | NLP / Report AI | 标签、摘要、结构化字段 | BERT、LLM、RAG、规则+模型 | F1、准确率、一致性、人工审核 |
 
+---
 
-# 1. 分割（Segmentation）
-定义：分割任务在医学影像中是指自动或半自动地识别并标注出特定的区域，如器官、病灶、血管等。
+## 4. 一个医学 AI 项目的最小闭环
 
-## 常用的分割模型
+一个项目至少要回答 8 个问题：
 
-## 1. U-Net
-**链接**
-- [U-Net Paper](https://arxiv.org/abs/1505.04597)
-- [U-Net Implementation in PyTorch](https://github.com/milesial/Pytorch-UNet)
+1. **临床场景**：谁在什么情况下需要这个工具？
+2. **目标人群**：纳入、排除标准是什么？
+3. **参考标准**：标签来自病理、专家共识、随访，还是结构化报告？
+4. **输入数据**：CT、MRI、超声、病理、文本、临床表格，是否多中心？
+5. **AI 输出**：mask、类别、概率、体积、报告，还是工作流结果？
+6. **验证设计**：训练/验证/内部测试/外部测试如何划分，是否按患者划分？
+7. **临床价值**：是否提升诊断准确性、效率、一致性或可解释性？
+8. **失败边界**：哪些病例不能用，哪些亚组风险更高？
 
-## 2. V-Net
+---
 
-**描述**
-- V-Net是针对三维医学图像（如CT和MRI）的分割模型。其架构类似于U-Net，但专门设计用于3D卷积网络。
+## 5. 推荐工作流
 
-**链接**
-- [V-Net Paper](https://arxiv.org/abs/1606.04797)
-- [V-Net Implementation](https://github.com/faustomilletari/VNet)
+### Step 1：填写项目卡
 
-## 3. DeepLabV3+
+复制 [`templates/project-card.md`](templates/project-card.md)，先把临床问题写清楚，再决定模型。
 
-**描述**
-- DeepLabV3+是DeepLab系列的改进版本，结合了空洞卷积和编码器-解码器架构，能够有效捕捉多尺度上下文信息，并提高分割精度。
+### Step 2：定义数据与标签
 
-**链接**
-- [DeepLabV3+ Paper](https://arxiv.org/abs/1802.02611)
-- [DeepLabV3+ Implementation in PyTorch](https://github.com/jfzhang95/pytorch-deeplab-xception)
+复制 [`templates/dataset-card.md`](templates/dataset-card.md)，记录中心、设备、序列、标注者、纳排标准和数据划分。
 
-## 4. Attention U-Net
+### Step 3：选择任务类型
 
-**描述**
-- Attention U-Net在U-Net的基础上引入了注意力机制，使网络能够更好地关注重要区域，提升分割性能。
+参考 [`docs/03-task-taxonomy.md`](docs/03-task-taxonomy.md)，不要把所有问题都粗暴写成“分类”或“分割”。
 
-**链接**
-- [Attention U-Net Paper](https://arxiv.org/abs/1804.03999)
-- [Attention U-Net Implementation](https://github.com/ozan-oktay/Attention-Gated-Networks)
+### Step 4：建立基线模型
 
-## 5. nnU-Net
+优先建立一个稳定、可解释、可复现的 baseline，再尝试复杂模型。
 
-**描述**
-- nnU-Net（no-new-Net）是一种自动化的分割模型框架，能够根据数据集的特点自动配置网络结构和训练参数，MSD。
+### Step 5：验证临床价值
 
-**链接**
-- [nnU-Net Paper](https://arxiv.org/abs/1809.10486)
-- [nnU-Net Implementation](https://github.com/MIC-DKFZ/nnUNet)
+参考 [`docs/04-evaluation-and-statistics.md`](docs/04-evaluation-and-statistics.md)，尽量补充外部测试、校准、DCA、读者实验或工作流效率分析。
 
-## 6. 3D U-Net
+### Step 6：准备论文/开源材料
 
-**描述**
-- 3D U-Net是U-Net的三维扩展版本，专门用于3D医学图像的分割任务。其架构类似于U-Net，但采用3D卷积。
+参考 [`resources/reporting-and-checklists.md`](resources/reporting-and-checklists.md)，同步准备 Methods、supplement、model card 和 dataset card。
 
-**链接**
-- [3D U-Net Paper](https://arxiv.org/abs/1606.06650)
-- [3D U-Net Implementation](https://github.com/wolny/pytorch-3dunet)
+---
 
-## 7. TransUNet
+## 6. 带学生/实习生的建议任务分层
 
-**描述**
-- TransUNet结合了Transformer和U-Net的优势，通过Transformer模块捕捉长距离依赖关系，并通过U-Net实现精确的分割。
+| 层级 | 适合对象 | 目标 | 交付物 |
+|---|---|---|---|
+| S0 入门 | 新学生 | 跑通公开数据和 baseline | 可复现实验记录、baseline 指标 |
+| S1 单任务 | 有基础学生 | 完成分割/分类/检测单任务 | 代码、结果表、失败病例分析 |
+| S2 临床验证 | 研究生/核心学生 | 加入多中心、统计和读者实验 | 主结果表、补充表、论文 Methods |
+| S3 工作流闭环 | 高阶项目 | 将多个模型串成临床流程 | 流程图、结构化报告、临床效率评价 |
 
-**链接**
-- [TransUNet Paper](https://arxiv.org/abs/2102.04306)
-- [TransUNet Implementation](https://github.com/Beckschen/TransUNet)
+---
 
-## 8. Swin-Unet
+## 7. 本仓库后续计划
 
-**描述**
-- Swin-Unet是基于Swin Transformer的分割模型，利用Swin Transformer的多尺度特性和自注意力机制，提升了分割效果。
+- [ ] 增加医学影像公开数据集索引；
+- [ ] 增加常见论文 Methods 模板；
+- [ ] 增加 reader study 设计模板；
+- [ ] 增加多中心验证与统计代码示例；
+- [ ] 增加医学 AI 项目开源规范示例；
+- [ ] 增加动态 MRI / 多阶段工作流案例。
 
-**链接**
-- [Swin-Unet Paper](https://arxiv.org/abs/2105.05537)
-- [Swin-Unet Implementation](https://github.com/HuCaoFighting/Swin-Unet)
+---
 
-## 9. SegFormer
+## 8. 使用提醒
 
-**描述**
-- SegFormer是一种高效的全Transformer架构分割模型，具备较强的跨尺度特性，适用于多种分割任务。
-
-**链接**
-- [SegFormer Paper](https://arxiv.org/abs/2105.15203)
-- [SegFormer Implementation](https://github.com/NVlabs/SegFormer)
-
-## 10. MedT
-
-**描述**
-- MedT（Medical Transformer）是一种专门为医学图像设计的Transformer架构，利用多尺度特征提取和自注意力机制，提升了分割性能。
-
-**链接**
-- [MedT Paper](https://arxiv.org/abs/2108.03305)
-- [MedT Implementation](https://github.com/jeya-maria-jose/Medical-Transformer)
-
-
-
-# 常用分割数据集
-
-## 1. LUNA16 (LUng Nodule Analysis 2016)
-
-- 描述：LUNA16数据集用于肺结节检测和分割任务，包含低剂量CT扫描的肺结节图像。
-- 链接：[LUNA16 Dataset](https://luna16.grand-challenge.org/)
-- 数据格式：DICOM或NIfTI格式的CT图像
-- 样本：888例CT扫描，每个扫描包含多个切片，每个切片尺寸为512x512像素
-
-## 2. BraTS (Brain Tumor Segmentation)
-
-- 描述：BraTS数据集用于脑肿瘤分割任务，包含多模态MRI扫描（包括T1, T2, FLAIR, T1c）以及肿瘤标注。
-- 链接：[BraTS Dataset](https://www.med.upenn.edu/cbica/brats2020/data.html)
-- 数据格式：NIfTI格式的MRI图像
-- 样本：约500例患者的MRI扫描，每个扫描包含多个模态，每个模态的尺寸为240x240x155像素
-
-## 3. ISIC (International Skin Imaging Collaboration)
-
-- 描述：ISIC数据集用于皮肤病变分割任务，包含皮肤病变的皮肤图像和标注。
-- 链接：[ISIC Archive](https://www.isic-archive.com/)
-- 数据格式：JPEG格式的皮肤图像及相应的标注文件（JSON或PNG格式）
-- 样本：约25000张皮肤图像，尺寸各异，通常为1024x1024像素或更大
-
-## 4. KiTS (Kidney Tumor Segmentation)
-
-- 描述：KiTS数据集用于肾脏和肾肿瘤的分割任务，包含CT扫描图像和手动标注的肾脏、肾肿瘤掩码。
-- 链接：[KiTS Dataset](https://kits19.grand-challenge.org/)
-- 数据格式：NIfTI格式的CT图像
-- 样本：300例CT扫描，每个扫描包含多个切片，尺寸为512x512像素
-
-## 5. LiTS (Liver Tumor Segmentation)
-
-- 描述：LiTS数据集用于肝脏和肝肿瘤的分割任务，包含CT扫描图像和肝脏、肝肿瘤的标注。
-- 链接：[LiTS Dataset](https://competitions.codalab.org/competitions/17094)
-- 数据格式：NIfTI格式的CT图像
-- 样本：131例CT扫描，每个扫描包含多个切片，尺寸为512x512像素
-
-## 6. ACDC (Automated Cardiac Diagnosis Challenge)
-
-- 描述：ACDC数据集用于心脏分割任务，包含不同心脏阶段（收缩期、舒张期）的MRI扫描及心脏结构的标注。
-- 链接：[ACDC Dataset](https://www.creatis.insa-lyon.fr/Challenge/acdc/databases.html)
-- 数据格式：NIfTI格式的MRI图像
-- 样本：100例患者的MRI扫描，每个扫描包含多个时间点和心脏切片
-
-## 7. DRIVE (Digital Retinal Images for Vessel Extraction)
-
-- 描述：DRIVE数据集用于视网膜血管分割任务，包含眼底图像和血管标注。
-- 链接：[DRIVE Dataset](https://drive.grand-challenge.org/)
-- 数据格式：TIFF格式的眼底图像及对应的标注文件
-- 样本：40张眼底图像，每张图像的尺寸为584x565像素
-
-
-## 8. MSD (Medical Segmentation Decathlon)
-
-- 描述：MSD数据集用于多种器官和病变的分割任务，包括10个不同的医学影像分割挑战。
-- 链接：[MSD Dataset](http://medicaldecathlon.com/)
-- 数据格式：NIfTI格式的图像
-- 样本：每个任务的数据量和样本数各不相同，具体如下：
-  1. **任务1: Brain Tumor** - MRI图像，484例
-  2. **任务2: Heart** - MRI图像，20例
-  3. **任务3: Hippocampus** - MRI图像，394例
-  4. **任务4: Liver** - CT图像，201例
-  5. **任务5: Lung** - CT图像，63例
-  6. **任务6: Pancreas** - CT图像，281例
-  7. **任务7: Prostate** - MRI图像，48例
-  8. **任务8: Hepatic Vessel** - CT图像，443例
-  9. **任务9: Spleen** - CT图像，61例
-  10. **任务10: Colon** - CT图像，190例
-
-## 9. PROMISE12 (Prostate MR Image Segmentation 2012)
-
-- 描述：PROMISE12数据集用于前列腺分割任务，包含多中心、多参数的前列腺MRI图像。
-- 链接：[PROMISE12 Dataset](https://promise12.grand-challenge.org/)
-- 数据格式：NIfTI格式的MRI图像
-- 样本：50例患者的MRI扫描，每个扫描包含多个切片
-
-## 10. CHASE_DB1 (Child Heart and Health Study in England Database 1)
-
-- 描述：CHASE_DB1数据集用于视网膜血管分割任务，包含儿童眼底图像和血管标注。
-- 链接：[CHASE_DB1 Dataset](https://blogs.kingston.ac.uk/retinal/chasedb1/)
-- 数据格式：JPEG格式的眼底图像及对应的标注文件
-- 样本：28张眼底图像，每张图像的尺寸为999x960像素
-
-## 11. STARE (Structured Analysis of the Retina)
-
-- 描述：STARE数据集用于视网膜血管分割任务，包含眼底图像和血管标注。
-- 链接：[STARE Dataset](http://cecas.clemson.edu/~ahoover/stare/)
-- 数据格式：PPM格式的眼底图像及对应的标注文件
-- 样本：20张眼底图像，每张图像的尺寸为605x700像素
-
-## 12. BSDS500 (Berkeley Segmentation Dataset and Benchmark)
-
-- 描述：BSDS500数据集用于自然图像分割任务，包含图像和人类标注的边缘检测结果。
-- 链接：[BSDS500 Dataset](https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/bsds/)
-- 数据格式：JPEG格式的图像及对应的标注文件
-- 样本：500张自然图像，每张图像的尺寸约为321x481像素
-
-## 更多更全数据[请参考：](https://zhuanlan.zhihu.com/p/661132213)
-  	影像数据集 (224)
-	-全身（6）
-	-头颈部（42）
-	-胸部（29）
-	-腹部（33）
-	-心脏（9）
-	-骨头（7）
-	-内窥镜（28）
-	-眼科（33）
-	-皮肤科（7）
-	-显微成像（30）
-	-多模态数据集 (19)
-	-文本数据集 (23)
-	
-
-
-
-#####  基本流程
-**数据准备**
-
-	数据收集与来源（如公开数据集、临床数据）
-	数据预处理（如去噪、标准化、增强）
-	数据标注工具和方法
- 
-**模型选择**
-
-	常用分割网络（如U-Net、V-Net、DeepLab）
-	模型架构详解
-	预训练模型与微调
-**训练与验证**
-
-	数据分割（训练集、验证集、测试集）
-	训练超参数设置（学习率、批量大小、训练轮数等）
-	验证策略与指标（交叉验证、Dice系数、IoU等）
-**模型评估与优化**
-
-	评估指标与方法（混淆矩阵、ROC曲线等）
-	超参数调优（网格搜索、随机搜索）
-	模型优化技巧（正则化、数据增强、迁移学习）
-
-## 2. 分类（Classification）
-
-定义：分类任务在医学影像中是指将输入数据（如影像、信号、基因数据）分配到预定义的类别中，如疾病诊断。
-
-### 经典、常用数据集
-
-1. **[MNIST](http://yann.lecun.com/exdb/mnist/)**
-    - **描述**：手写数字的图片，包含0到9的数字。
-    - **数据格式**：28x28的灰度图像，标签为0-9。
-    - **样本**：60,000个训练样本，10,000个测试样本。
-
-2. **[CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html)**
-    - **描述**：10类自然图像，包括飞机、汽车、鸟、猫、鹿、狗、青蛙、马、船、卡车。
-    - **数据格式**：32x32的彩色图像。
-    - **样本**：50,000个训练样本，10,000个测试样本。
-
-3. **[ImageNet](http://www.image-net.org/)**
-    - **描述**：大型视觉数据库，用于对象识别。
-    - **数据格式**：彩色图像，大小不一。
-    - **样本**：超过1400万张图像，涵盖2万类。
-
-4. **[CheXpert](https://stanfordmlgroup.github.io/competitions/chexpert/)**
-    - **描述**：用于胸部X射线的放射学报告分类和标签。
-    - **数据格式**：胸部X射线图像，标签包括14种疾病类别。
-    - **样本**：224,316张胸部X射线图像。
-
-5. **[COVIDx](https://www.kaggle.com/tawsifurrahman/covid19-radiography-database)**
-    - **描述**：用于新冠肺炎检测的胸部X射线图像。
-    - **数据格式**：胸部X射线图像，标签为COVID-19阳性、COVID-19阴性和正常。
-    - **样本**：超过16,000张图像。
-
-6. **[HAM10000](https://www.kaggle.com/kmader/skin-cancer-mnist-ham10000)**
-    - **描述**：皮肤病变分类数据集，包括7种皮肤病变类型。
-    - **数据格式**：皮肤病变的彩色图像。
-    - **样本**：10,015张图像。
-
-7. **[BraTS](https://www.med.upenn.edu/cbica/brats2020/data.html)**
-    - **描述**：用于脑肿瘤分割和分类的多模态MRI扫描。
-    - **数据格式**：MRI扫描图像，标签为肿瘤类别。
-    - **样本**：约285个患者的MRI扫描图像。
-  
-### 常用医学分类模型
-
-1. **[ResNet](https://arxiv.org/abs/1512.03385)**
-    - **描述**：ResNet通过引入残差模块，解决了深层网络中的退化问题，显著提升了分类性能。
-
-2. **[VGG](https://arxiv.org/abs/1409.1556)**
-    - **描述**：VGG网络以其简单和统一的网络结构著称，通过使用小卷积滤波器的堆叠取得了优异的分类性能。
-
-3. **[DenseNet](https://arxiv.org/abs/1608.06993)**
-    - **描述**：DenseNet通过密集连接方式缓解了梯度消失问题，并促进了特征复用，提升了分类精度。
-
-4. **[Inception](https://arxiv.org/abs/1409.4842)**
-    - **描述**：Inception网络通过引入多尺度卷积和池化操作，在保持计算效率的同时提高了分类性能。
-
-5. **[EfficientNet](https://arxiv.org/abs/1905.11946)**
-    - **描述**：EfficientNet通过复合缩放方法同时缩放网络的深度、宽度和分辨率，实现了更高效的分类性能。
-
-6. **[Vision Transformer](https://arxiv.org/abs/2010.11929)**
-    - **描述**：ViT通过直接应用Transformer架构于图像分类任务上，利用自注意力机制取得了显著的分类效果。
-
-7. **[ConvNeXt](https://arxiv.org/abs/2201.03545)**
-    - **描述**：ConvNeXt结合了现代卷积神经网络和Transformer的优点，改进了网络结构，提升了分类精度。
-
-8. **[Swin Transformer](https://arxiv.org/abs/2103.14030)**
-    - **描述**：Swin Transformer通过引入滑动窗口机制，使得Transformer在处理高分辨率图像时更为高效和精准。
-
-
-##### 具体临床任务：
-
-	•疾病诊断：
-		肺炎诊断：从胸部X光片中分类是否患有肺炎。
-		乳腺癌诊断：从乳腺X光片或超声图像中分类是否患有乳腺癌。
-		皮肤病变诊断：从皮肤图像中分类是否为恶性黑色素瘤或其他皮肤病变。
-	•病变分类：
-		脑卒中分类：从CT或MRI图像中分类是缺血性卒中还是出血性卒中。
-		糖尿病性视网膜病变分类：从视网膜图像中分类病变的严重程度。
-	•器官状态分类：
-		肝纤维化分级：从肝脏影像中分类肝纤维化的程度。
-		肾功能分类：从CT或MRI图像中分类肾功能的状态。
-
-#### 3. 检测（Detection）
-定义：检测任务在医学影像中是指找到特定对象的位置并进行标注，如检测肺结节。
-	
-##### 常用技术：
-
-	•	区域卷积神经网络（R-CNN）：通过区域提案网络（RPN）生成候选区域，并利用卷积神经网络进行分类和回归。
-	•	Fast R-CNN：改进了R-CNN，通过共享特征提取的计算，提高了检测速度。
-	•	Faster R-CNN：进一步优化了RPN的效率，实现了更快速的目标检测。
-	•	YOLO（You Only Look Once）：单次检测器，将整个图像作为输入，直接回归目标的类别和位置，实现实时检测。
-	•	SSD（Single Shot MultiBox Detector）：基于多尺度特征图的检测器，能够同时预测多个目标的类别和位置。
-	•	RetinaNet：结合了FPN（特征金字塔网络）和Focal Loss，专注于解决小目标和不平衡数据的问题。
-
-##### 具体临床任务：
-
-	•病变检测：
-		肺结节检测：从胸部CT图像中检测肺结节的位置和大小。
-		乳腺肿块检测：从乳腺X光片或超声图像中检测乳腺肿块。
-		脑出血检测：从CT或MRI图像中检测脑出血区域。
-	•器官检测：
-		肝脏检测：从腹部CT图像中检测肝脏的边界和位置。
-		肾脏检测：从腹部影像中检测肾脏的位置和边界。
-	•血管检测：
-		冠状动脉检测：从CT血管造影图像中检测冠状动脉的走行和病变。
-		脑动脉瘤检测：从MR血管造影图像中检测脑动脉瘤的位置和大小。
-
-#### 4. 回归（Regression）
-定义：回归任务在医学影像中是指预测一个连续值，如肿瘤生长速度、器官体积等。
-
-##### 常用技术：
-
-	•	多层感知器（MLP）：一种基本的前馈神经网络，用于处理简单的回归任务。<br>
-	•	深度神经网络（DNN）：利用多个隐藏层来提取复杂特征，适用于复杂的回归问题。<br>
-	•	卷积神经网络（CNN）：虽然主要用于图像分类和分割，但也可用于图像回归任务。<br>
-	•	长短期记忆网络（LSTM）：一种适用于处理时间序列数据的递归神经网络，常用于医学影像中的时间序列预测。<br>
-	•	梯度增强树（Gradient Boosting Trees）：如XGBoost和LightGBM，适用于各种回归任务，尤其是结构化数据。<br>
-	•	随机森林（Random Forest）：一种基于决策树的集成学习方法，适用于多种回归任务。<br>
-
-##### 具体临床任务：<br>
-
-	•	肿瘤生长预测：<br>
-		脑肿瘤生长速度预测：从多次MRI扫描中预测脑肿瘤的生长速度。<br>
-		肺结节生长速度预测：从多次CT扫描中预测肺结节的生长速度。<br>
-	•	器官体积估计：<br>
-		心脏体积估计：从心脏MRI或CT图像中估计心脏各部分的体积。<br>
-		肝脏体积估计：从腹部CT图像中估计肝脏的体积。<br>
-	•	病变大小预测：<br>
-		动脉瘤大小预测：从MR血管造影图像中预测脑动脉瘤的大小。<br>
-		肾结石大小预测：从CT图像中预测肾结石的大小。<br>
-	•	临床指标预测：<br>
-		血糖水平预测：基于患者的历史数据和生活习惯预测未来的血糖水平。<br>
-		肾功能预测：从影像和临床数据中预测未来的肾功能参数（如GFR）。<br>
-
-
+本仓库仅用于科研设计、教学和项目管理，不构成医疗建议，也不能替代医生判断。任何面向临床使用的 AI 系统都需要经过伦理审批、数据安全审查、充分验证和相应监管流程。
